@@ -329,6 +329,7 @@ with tab1:
             input_vals[feat] = st.slider(feat, 1, 10, default, help=desc)
 
         predict_btn = st.button("🔍 Predict", use_container_width=True)
+        all_models_btn = st.button("⚡ Run All Models", use_container_width=True)
 
     with col_result:
         st.markdown('<div class="section-header">Result</div>', unsafe_allow_html=True)
@@ -398,12 +399,93 @@ with tab1:
                     </div>""", unsafe_allow_html=True)
                     shown += 1
                     if shown >= 8: break
+        elif all_models_btn:
+            arr = np.array([[input_vals[f] for f in FEATURE_NAMES]])
+            arr_scaled = scaler.transform(arr)
+
+            st.markdown('<div class="section-header">All Models — Side by Side</div>', unsafe_allow_html=True)
+
+            all_preds = {}
+            for name, m in models.items():
+                p = int(m.predict(arr_scaled)[0])
+                conf = None
+                if hasattr(m, "predict_proba"):
+                    try:
+                        prob = m.predict_proba(arr_scaled)[0]
+                        conf = prob[p] * 100
+                    except: pass
+                all_preds[name] = {"pred": p, "conf": conf}
+
+            # Verdict banner
+            votes_malignant = sum(1 for v in all_preds.values() if v["pred"] == 1)
+            votes_benign    = len(all_preds) - votes_malignant
+            majority = "Malignant" if votes_malignant > votes_benign else "Benign"
+            maj_color = "#e05c7a" if majority == "Malignant" else "#4caf8a"
+            maj_icon  = "🔴" if majority == "Malignant" else "✅"
+            agree = votes_malignant == len(all_preds) or votes_benign == len(all_preds)
+            agreement_text = "All models agree" if agree else f"{max(votes_malignant, votes_benign)}/{len(all_preds)} models agree"
+
+            st.markdown(f"""
+            <div style="background:linear-gradient(135deg,#1a1d27,#21253a);
+                        border:2px solid {maj_color};border-radius:14px;
+                        padding:1.2rem 1.5rem;text-align:center;margin-bottom:1.2rem">
+              <div style="font-size:2rem">{maj_icon}</div>
+              <div style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:{maj_color}">{majority}</div>
+              <div style="color:#7a7f9a;font-size:0.85rem;margin-top:0.3rem">{agreement_text} · {votes_benign} Benign · {votes_malignant} Malignant</div>
+            </div>""", unsafe_allow_html=True)
+
+            # Individual model cards
+            for name, result in all_preds.items():
+                p     = result["pred"]
+                conf  = result["conf"]
+                label = "✅ Benign" if p == 0 else "🔴 Malignant"
+                bcolor = "#4caf8a" if p == 0 else "#e05c7a"
+                bg     = "#0d2b1f" if p == 0 else "#2b0d18"
+                conf_str = f" · {conf:.1f}% confidence" if conf else ""
+                st.markdown(f"""
+                <div style="background:{bg};border:1px solid {bcolor}44;
+                            border-left:4px solid {bcolor};border-radius:10px;
+                            padding:0.9rem 1.2rem;margin-bottom:0.6rem;
+                            display:flex;justify-content:space-between;align-items:center">
+                  <div>
+                    <span style="font-weight:600;color:#e8eaf0">{name}</span>
+                    <span style="color:#7a7f9a;font-size:0.8rem">{conf_str}</span>
+                  </div>
+                  <div style="color:{bcolor};font-weight:700;font-size:1rem">{label}</div>
+                </div>""", unsafe_allow_html=True)
+
+            # Disagreement note
+            if not agree:
+                st.markdown("""
+                <div style="background:#2a2515;border:1px solid #e0c05c44;border-radius:10px;
+                            padding:0.9rem 1.2rem;margin-top:0.5rem;color:#e0c05c;font-size:0.85rem">
+                  ⚠️ <b>Models disagree</b> — this case may be ambiguous. 
+                  Neural Network and Rule Induction are generally more reliable on this dataset.
+                </div>""", unsafe_allow_html=True)
+
+            # Feature risk bars
+            st.markdown('<div class="section-header" style="margin-top:1.2rem">Feature Risk Profile</div>', unsafe_allow_html=True)
+            for feat in FEATURE_NAMES:
+                v = input_vals[feat]
+                pct = (v - 1) / 9
+                color = "#4caf8a" if pct < 0.4 else "#e0a05c" if pct < 0.7 else "#e05c7a"
+                st.markdown(f"""
+                <div style="margin-bottom:0.5rem">
+                  <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:2px">
+                    <span>{feat}</span><span style="color:{color};font-weight:600">{v}/10</span>
+                  </div>
+                  <div style="background:#2a2d3e;border-radius:4px;height:6px">
+                    <div style="width:{pct*100:.0f}%;background:{color};height:6px;border-radius:4px"></div>
+                  </div>
+                </div>""", unsafe_allow_html=True)
+
         else:
             st.markdown("""
             <div style="background:#1a1d27;border:1px dashed #2a2d3e;border-radius:16px;
                         padding:3rem;text-align:center;color:#7a7f9a;margin-top:2rem">
               <div style="font-size:3rem;margin-bottom:1rem">🩺</div>
-              <p>Adjust the sliders and click <b>Predict</b><br>to see the classification result</p>
+              <p>Adjust the sliders and click <b>Predict</b> for one model<br>
+              or <b>Run All Models</b> to compare all 4 at once</p>
             </div>""", unsafe_allow_html=True)
 
 # ════════════════════════════════════════════════════════════════
