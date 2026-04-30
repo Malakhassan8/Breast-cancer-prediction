@@ -124,4 +124,4 @@ This application is for **educational purposes only** and does not constitute me
 ## 👤 Author
 
 **Malak Hassan**
-- LinkedIn: www.linkedin.com/in/malak-hassan-b2b984271 (#)
+- LinkedIn: www.linkedin.com/in/malak-hassan-b2b984271
