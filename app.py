@@ -2,14 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import pickle
-import os
 import re
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neural_network import MLPClassifier
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import warnings
@@ -169,73 +162,34 @@ FEATURES = [
 ]
 FEATURE_NAMES = [f[0] for f in FEATURES]
 
-# ── Model training (cached) ──────────────────────────────────────
-@st.cache_resource(show_spinner="Training models on Wisconsin dataset…")
-def train_models():
-    url = "https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/breast-cancer-wisconsin.data"
-    cols = ["id","Clump Thickness","Uniformity of Cell Size","Uniformity of Cell Shape",
-            "Marginal Adhesion","Single Epithelial Cell Size","Bare Nuclei",
-            "Bland Chromatin","Normal Nucleoli","Mitoses","Class"]
+# ── Load models from .sav files ──────────────────────────────────
+@st.cache_resource(show_spinner="Loading models…")
+def load_models():
+    tree   = pickle.load(open("decision_tree.sav",  "rb"))
+    NB     = pickle.load(open("naive_bayes.sav",    "rb"))
+    nn     = pickle.load(open("neural_network.sav", "rb"))
+    model4 = pickle.load(open("rule_induction.sav", "rb"))
+    scaler = pickle.load(open("scaler.sav",         "rb"))
+
+    models = {
+        "Decision Tree":   tree,
+        "Naive Bayes":     NB,
+        "Neural Network":  nn,
+        "Rule Induction":  model4,
+    }
+
+    # Hardcoded metrics from your notebook results
+    metrics = {
+        "Decision Tree":  {"Accuracy": 92.70, "Precision": 91.67, "Recall": 88.00, "F1-Score": 89.80},
+        "Naive Bayes":    {"Accuracy": 94.16, "Precision": 92.00, "Recall": 92.00, "F1-Score": 92.00},
+        "Neural Network": {"Accuracy": 97.08, "Precision":100.00, "Recall": 92.00, "F1-Score": 95.83},
+        "Rule Induction": {"Accuracy": 96.35, "Precision": 97.87, "Recall": 92.00, "F1-Score": 94.85},
+    }
+
+    # Extract rules from RuleFit
+    rules_data = []
     try:
-        data = pd.read_csv(url, names=cols)
-    except:
-        # fallback synthetic if no internet
-        np.random.seed(42)
-        n = 699
-        data = pd.DataFrame(np.random.randint(1, 11, (n, 9)), columns=FEATURE_NAMES)
-        data["Class"] = np.random.choice([2, 4], n, p=[0.65, 0.35])
-
-    data.replace("?", np.nan, inplace=True)
-    data.dropna(inplace=True)
-    data = data.apply(pd.to_numeric, errors='coerce').dropna()
-    data["Class"] = data["Class"].map({2: 0, 4: 1})
-    data.drop(columns=["id"], errors="ignore", inplace=True)
-
-    X = data[FEATURE_NAMES]
-    y = data["Class"]
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=40)
-    scaler = StandardScaler()
-    X_train_s = scaler.fit_transform(X_train)
-    X_test_s  = scaler.transform(X_test)
-
-    tree = DecisionTreeClassifier(criterion="entropy", random_state=0)
-    tree.fit(X_train_s, y_train)
-
-    nb = GaussianNB()
-    nb.fit(X_train_s, y_train)
-
-    nn = MLPClassifier(hidden_layer_sizes=(16, 8), activation="relu",
-                       solver="adam", max_iter=500, random_state=42)
-    nn.fit(X_train_s, y_train)
-
-    models = {"Decision Tree": tree, "Naive Bayes": nb, "Neural Network": nn}
-
-    metrics = {}
-    for name, m in models.items():
-        yp = m.predict(X_test_s)
-        metrics[name] = {
-            "Accuracy":  round(accuracy_score(y_test, yp)  * 100, 2),
-            "Precision": round(precision_score(y_test, yp) * 100, 2),
-            "Recall":    round(recall_score(y_test, yp)    * 100, 2),
-            "F1-Score":  round(f1_score(y_test, yp)        * 100, 2),
-        }
-    # Add RuleFit if available
-    try:
-        from imodels import RuleFitClassifier
-        rf = RuleFitClassifier(random_state=42)
-        rf.fit(X_train_s, y_train)
-        yp = rf.predict(X_test_s)
-        models["Rule Induction"] = rf
-        metrics["Rule Induction"] = {
-            "Accuracy":  round(accuracy_score(y_test, yp)  * 100, 2),
-            "Precision": round(precision_score(y_test, yp) * 100, 2),
-            "Recall":    round(recall_score(y_test, yp)    * 100, 2),
-            "F1-Score":  round(f1_score(y_test, yp)        * 100, 2),
-        }
-        # Extract rules
-        rules_data = []
-        for rule_obj in rf.rules_:
+        for rule_obj in model4.rules_:
             rule_text = rule_obj.rule
             for i, name in enumerate(FEATURE_NAMES):
                 rule_text = rule_text.replace(f"X{i}", name)
@@ -272,7 +226,7 @@ def extract_values_from_text(text):
     return vals
 
 # ── Load models ──────────────────────────────────────────────────
-models, scaler, metrics, rules_df = train_models()
+models, scaler, metrics, rules_df = load_models()
 
 # ── Hero ─────────────────────────────────────────────────────────
 st.markdown("""
