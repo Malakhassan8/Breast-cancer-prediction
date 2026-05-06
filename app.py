@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 import pickle
 import re
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -24,9 +22,7 @@ st.markdown("""
 :root {
     --bg: #0f1117;
     --card: #1a1d27;
-    --card2: #21253a;
     --accent: #e05c7a;
-    --accent2: #5c8de0;
     --benign: #4caf8a;
     --malignant: #e05c7a;
     --text: #e8eaf0;
@@ -104,18 +100,6 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
 }
 .result-title { font-family: 'DM Serif Display', serif; font-size: 2rem; margin: 0.5rem 0; }
 .result-sub { color: var(--muted); font-size: 0.9rem; }
-
-.rule-card {
-    background: var(--card);
-    border-left: 3px solid;
-    border-radius: 8px;
-    padding: 0.9rem 1.2rem;
-    margin-bottom: 0.6rem;
-    font-size: 0.85rem;
-}
-.rule-benign  { border-color: var(--benign); }
-.rule-malignant { border-color: var(--malignant); }
-.rule-fired { background: var(--card2) !important; }
 
 .section-header {
     font-family: 'DM Serif Display', serif;
@@ -246,7 +230,7 @@ with st.sidebar:
     st.caption("⚠️ For educational purposes only. Not a medical diagnosis tool.")
 
 # ── Tabs ─────────────────────────────────────────────────────────
-tab1, tab2, tab3 = st.tabs(["🩺 Classify", "📊 Model Comparison", "📖 How It Works"])
+tab1, tab2 = st.tabs(["🩺 Classify", "📊 Model Comparison"])
 
 # ════════════════════════════════════════════════════════════════
 # TAB 1 — CLASSIFY
@@ -451,8 +435,6 @@ with tab2:
     df_m = pd.DataFrame(metrics).T.reset_index().rename(columns={"index":"Algorithm"})
 
     # Metric cards
-    best_acc_algo = df_m.loc[df_m["Accuracy"].idxmax(), "Algorithm"]
-    best_acc_val  = df_m["Accuracy"].max()
     cols = st.columns(4)
     metric_labels = ["Accuracy", "Precision", "Recall", "F1-Score"]
     for i, lbl in enumerate(metric_labels):
@@ -466,36 +448,6 @@ with tab2:
         </div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-
-    # Bar chart
-    fig, ax = plt.subplots(figsize=(12, 5))
-    fig.patch.set_facecolor("#1a1d27")
-    ax.set_facecolor("#1a1d27")
-
-    algos = df_m["Algorithm"].tolist()
-    x = np.arange(len(algos))
-    width = 0.2
-    colors = ["#e05c7a", "#5c8de0", "#4caf8a", "#e0c05c"]
-
-    for i, metric in enumerate(metric_labels):
-        bars = ax.bar(x + i*width, df_m[metric], width, label=metric,
-                      color=colors[i], alpha=0.85, edgecolor="#0f1117", linewidth=0.5)
-        for bar in bars:
-            ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.3,
-                    f"{bar.get_height():.1f}", ha="center", va="bottom",
-                    fontsize=7, color="#e8eaf0")
-
-    ax.set_xticks(x + width*1.5)
-    ax.set_xticklabels(algos, color="#e8eaf0", fontsize=10)
-    ax.set_ylim(80, 105)
-    ax.set_ylabel("Score (%)", color="#7a7f9a")
-    ax.tick_params(colors="#7a7f9a")
-    ax.spines[:].set_color("#2a2d3e")
-    ax.legend(facecolor="#21253a", edgecolor="#2a2d3e", labelcolor="#e8eaf0", fontsize=9)
-    ax.set_title("All Algorithms — All Metrics", color="#e8eaf0", fontsize=13, pad=12)
-    plt.tight_layout()
-    st.pyplot(fig)
-    plt.close()
 
     # Table
     st.markdown('<div class="section-header">Summary Table</div>', unsafe_allow_html=True)
@@ -520,50 +472,3 @@ with tab2:
           <b style="color:#e05c7a">{icon_title}</b><br>
           <span style="color:#b0b3c8;font-size:0.9rem">{body}</span>
         </div>""", unsafe_allow_html=True)
-
-# ════════════════════════════════════════════════════════════════
-# TAB 3 — HOW IT WORKS
-# ════════════════════════════════════════════════════════════════
-with tab3:
-    st.markdown('<div class="section-header">About the Dataset</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <div style="background:#1a1d27;border:1px solid #2a2d3e;border-radius:12px;padding:1.5rem">
-      <b>Wisconsin Breast Cancer Dataset</b> — UCI Machine Learning Repository<br><br>
-      <span style="color:#7a7f9a">699 patient samples · 9 clinical features · Binary classification (Benign / Malignant)<br>
-      ~65% Benign · ~35% Malignant · Features rated 1–10 by clinical examination</span>
-    </div>""", unsafe_allow_html=True)
-
-    st.markdown('<div class="section-header">Feature Guide</div>', unsafe_allow_html=True)
-    for feat, desc in FEATURES:
-        st.markdown(f"""
-        <div style="display:flex;gap:1rem;padding:0.7rem 0;border-bottom:1px solid #2a2d3e">
-          <div style="min-width:220px;font-weight:500;color:#e8eaf0">{feat}</div>
-          <div style="color:#7a7f9a;font-size:0.9rem">{desc}</div>
-        </div>""", unsafe_allow_html=True)
-
-    st.markdown('<div class="section-header">How to Use</div>', unsafe_allow_html=True)
-    steps = [
-        ("1", "Upload Report", "Upload a PDF or TXT lab report — the app will try to auto-fill the feature values."),
-        ("2", "Adjust Sliders", "Fine-tune any values manually using the sliders (1 = lowest risk, 10 = highest risk)."),
-        ("3", "Choose Algorithm", "Select which ML model to use from the sidebar."),
-        ("4", "Predict", "Click the Predict button to get the classification result with confidence score."),
-        ("5", "Review Rules", "If using Rule Induction, review the IF-THEN rules that led to the decision."),
-    ]
-    for num, title, desc in steps:
-        st.markdown(f"""
-        <div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:1rem">
-          <div style="background:#e05c7a;color:white;border-radius:50%;width:28px;height:28px;
-                      display:flex;align-items:center;justify-content:center;
-                      font-weight:700;font-size:0.85rem;flex-shrink:0">{num}</div>
-          <div>
-            <b style="color:#e8eaf0">{title}</b><br>
-            <span style="color:#7a7f9a;font-size:0.9rem">{desc}</span>
-          </div>
-        </div>""", unsafe_allow_html=True)
-
-    st.markdown("""
-    <div style="background:#2b0d18;border:1px solid #e05c7a33;border-radius:12px;
-                padding:1.2rem;margin-top:1rem;color:#e05c7a;font-size:0.85rem">
-      ⚠️ <b>Disclaimer:</b> This application is for educational purposes only and does not constitute 
-      medical advice. Always consult a qualified healthcare professional for diagnosis and treatment.
-    </div>""", unsafe_allow_html=True)
