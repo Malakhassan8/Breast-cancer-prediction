@@ -1,8 +1,11 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import os
 import pickle
 import re
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -149,11 +152,11 @@ FEATURE_NAMES = [f[0] for f in FEATURES]
 # ── Load models from .sav files ──────────────────────────────────
 @st.cache_resource(show_spinner="Loading models…")
 def load_models():
-    tree   = pickle.load(open("decision_tree.sav",  "rb"))
-    NB     = pickle.load(open("naive_bayes.sav",    "rb"))
-    nn     = pickle.load(open("neural_network.sav", "rb"))
-    model4 = pickle.load(open("rule_induction.sav", "rb"))
-    scaler = pickle.load(open("scaler.sav",         "rb"))
+    tree   = pickle.load(open(os.path.join(BASE_DIR, "decision_tree.sav"),  "rb"))
+    NB     = pickle.load(open(os.path.join(BASE_DIR, "naive_bayes.sav"),    "rb"))
+    nn     = pickle.load(open(os.path.join(BASE_DIR, "neural_network.sav"), "rb"))
+    model4 = pickle.load(open(os.path.join(BASE_DIR, "rule_induction.sav"), "rb"))
+    scaler = pickle.load(open(os.path.join(BASE_DIR, "scaler.sav"),         "rb"))
 
     models = {
         "Decision Tree":   tree,
