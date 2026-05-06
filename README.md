@@ -111,7 +111,7 @@ breast-cancer-classifier/
 
 Also check out my **Diabetes Risk Predictor** — predicts diabetes risk from 8 clinical indicators with PDF upload and a visual risk gauge.
 
-👉 [github.com/yourusername/diabetes-predictor](#) ← replace with your link
+👉 https://github.com/Malakhassan8/Diabetes-Prediction
 
 ---
 
