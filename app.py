@@ -4,10 +4,10 @@ import pandas as pd
 import os
 import pickle
 import re
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 import warnings
 warnings.filterwarnings("ignore")
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ── Page config ──────────────────────────────────────────────────
 st.set_page_config(
@@ -104,6 +104,17 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
 .result-title { font-family: 'DM Serif Display', serif; font-size: 2rem; margin: 0.5rem 0; }
 .result-sub { color: var(--muted); font-size: 0.9rem; }
 
+.rule-card {
+    background: var(--card);
+    border-left: 3px solid;
+    border-radius: 8px;
+    padding: 0.9rem 1.2rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.85rem;
+}
+.rule-benign   { border-color: #4caf8a; }
+.rule-malignant { border-color: #e05c7a; }
+
 .section-header {
     font-family: 'DM Serif Display', serif;
     font-size: 1.4rem;
@@ -149,7 +160,24 @@ FEATURES = [
 ]
 FEATURE_NAMES = [f[0] for f in FEATURES]
 
-# ── Load models from .sav files ──────────────────────────────────
+# ── Helper: feature risk bars ─────────────────────────────────────
+def show_risk_bars(input_vals):
+    st.markdown('<div class="section-header" style="margin-top:1.2rem">Feature Risk Profile</div>', unsafe_allow_html=True)
+    for feat in FEATURE_NAMES:
+        v = input_vals[feat]
+        pct = (v - 1) / 9
+        color = "#4caf8a" if pct < 0.4 else "#e0a05c" if pct < 0.7 else "#e05c7a"
+        st.markdown(f"""
+        <div style="margin-bottom:0.5rem">
+          <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:2px">
+            <span>{feat}</span><span style="color:{color};font-weight:600">{v}/10</span>
+          </div>
+          <div style="background:#2a2d3e;border-radius:4px;height:6px">
+            <div style="width:{pct*100:.0f}%;background:{color};height:6px;border-radius:4px;transition:width 0.3s"></div>
+          </div>
+        </div>""", unsafe_allow_html=True)
+
+# ── Load models ───────────────────────────────────────────────────
 @st.cache_resource(show_spinner="Loading models…")
 def load_models():
     tree   = pickle.load(open(os.path.join(BASE_DIR, "decision_tree.sav"),  "rb"))
@@ -310,20 +338,7 @@ with tab1:
                 </div>""", unsafe_allow_html=True)
 
             # Feature risk bars
-            st.markdown('<div class="section-header" style="margin-top:1.5rem">Feature Risk Profile</div>', unsafe_allow_html=True)
-            for feat in FEATURE_NAMES:
-                v = input_vals[feat]
-                pct = (v - 1) / 9
-                color = "#4caf8a" if pct < 0.4 else "#e0a05c" if pct < 0.7 else "#e05c7a"
-                st.markdown(f"""
-                <div style="margin-bottom:0.5rem">
-                  <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:2px">
-                    <span>{feat}</span><span style="color:{color};font-weight:600">{v}/10</span>
-                  </div>
-                  <div style="background:#2a2d3e;border-radius:4px;height:6px">
-                    <div style="width:{pct*100:.0f}%;background:{color};height:6px;border-radius:4px;transition:width 0.3s"></div>
-                  </div>
-                </div>""", unsafe_allow_html=True)
+            show_risk_bars(input_vals)
 
             # Rule Induction section
             if algo == "Rule Induction" and not rules_df.empty:
@@ -405,20 +420,7 @@ with tab1:
                 </div>""", unsafe_allow_html=True)
 
             # Feature risk bars
-            st.markdown('<div class="section-header" style="margin-top:1.2rem">Feature Risk Profile</div>', unsafe_allow_html=True)
-            for feat in FEATURE_NAMES:
-                v = input_vals[feat]
-                pct = (v - 1) / 9
-                color = "#4caf8a" if pct < 0.4 else "#e0a05c" if pct < 0.7 else "#e05c7a"
-                st.markdown(f"""
-                <div style="margin-bottom:0.5rem">
-                  <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:2px">
-                    <span>{feat}</span><span style="color:{color};font-weight:600">{v}/10</span>
-                  </div>
-                  <div style="background:#2a2d3e;border-radius:4px;height:6px">
-                    <div style="width:{pct*100:.0f}%;background:{color};height:6px;border-radius:4px"></div>
-                  </div>
-                </div>""", unsafe_allow_html=True)
+            show_risk_bars(input_vals)
 
         else:
             st.markdown("""
