@@ -180,11 +180,11 @@ def show_risk_bars(input_vals):
 # ── Load models ───────────────────────────────────────────────────
 @st.cache_resource(show_spinner="Loading models…")
 def load_models():
-    tree   = pickle.load(open(os.path.join(BASE_DIR, "decision_tree.sav"),  "rb"))
-    NB     = pickle.load(open(os.path.join(BASE_DIR, "naive_bayes.sav"),    "rb"))
-    nn     = pickle.load(open(os.path.join(BASE_DIR, "neural_network.sav"), "rb"))
-    model4 = pickle.load(open(os.path.join(BASE_DIR, "rule_induction.sav"), "rb"))
-    scaler = pickle.load(open(os.path.join(BASE_DIR, "scaler.sav"),         "rb"))
+    tree   = pickle.load(open(os.path.join(BASE_DIR, "Saved_Models/decision_tree.sav"),  "rb"))
+    NB     = pickle.load(open(os.path.join(BASE_DIR, "Saved_Models/naive_bayes.sav"),    "rb"))
+    nn     = pickle.load(open(os.path.join(BASE_DIR, "Saved_Models/neural_network.sav"), "rb"))
+    model4 = pickle.load(open(os.path.join(BASE_DIR, "Saved_Models/rule_induction.sav"), "rb"))
+    scaler = pickle.load(open(os.path.join(BASE_DIR, "Saved_Models/scaler.sav"),         "rb"))
 
     models = {
         "Decision Tree":   tree,
