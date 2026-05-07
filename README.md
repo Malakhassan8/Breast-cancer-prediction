@@ -123,5 +123,8 @@ This application is for **educational purposes only** and does not constitute me
 
 ## 👤 Author
 
-**Malak Hassan**
-- LinkedIn: www.linkedin.com/in/malak-hassan-b2b984271
+[**Malak Hassan**](www.linkedin.com/in/malak-hassan-b2b984271)
+
+---
+## Contributors
+- [**Rabab Mohamed**](https://github.com/mohamed-hamza20](https://github.com/Rabab-Okasha)
