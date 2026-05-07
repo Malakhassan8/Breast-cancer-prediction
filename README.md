@@ -4,8 +4,7 @@ A Streamlit web app that classifies breast tumors as **Benign** or **Malignant**
 
 ---
 
-## 🚀 Live Demo
-👉 **https://breast-cancer-prediction-8v3gtkney8bkrfcslpbtft.streamlit.app/** 
+## 🚀 [Try Live Demo](https://breast-cancer-prediction-8v3gtkney8bkrfcslpbtft.streamlit.app/)
 
 ---
 
@@ -127,4 +126,4 @@ This application is for **educational purposes only** and does not constitute me
 
 ---
 ## Contributors
-- [**Rabab Mohamed**](https://github.com/mohamed-hamza20](https://github.com/Rabab-Okasha)
+- [**Rabab Mohamed**](https://github.com/Rabab-Okasha)
