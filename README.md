@@ -2,9 +2,8 @@
 
 A Streamlit web app that classifies breast tumors as **Benign** or **Malignant** using 4 machine learning algorithms trained on the Wisconsin Breast Cancer Dataset.
 
----
 
-## 🚀 [Try Live Demo](https://breast-cancer-prediction-8v3gtkney8bkrfcslpbtft.streamlit.app/)
+## 🚀 Try [Live Demo](https://breast-cancer-prediction-8v3gtkney8bkrfcslpbtft.streamlit.app/)
 
 ---
 
@@ -108,9 +107,9 @@ breast-cancer-classifier/
 
 ## 🔗 Related Project
 
-Also check out my **Diabetes Risk Predictor** — predicts diabetes risk from 8 clinical indicators with PDF upload and a visual risk gauge.
+Also check out my [**Diabetes Risk Predictor**](https://github.com/Malakhassan8/Diabetes-Prediction) — predicts diabetes risk from 8 clinical indicators with PDF upload and a visual risk gauge.
 
-👉 https://github.com/Malakhassan8/Diabetes-Prediction
+👉
 
 ---
 
@@ -126,4 +125,4 @@ This application is for **educational purposes only** and does not constitute me
 
 ---
 ## Contributors
-- [**Rabab Mohamed**](https://github.com/Rabab-Okasha)
+[**Rabab Mohamed**](https://github.com/Rabab-Okasha)
