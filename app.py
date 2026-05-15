@@ -39,6 +39,24 @@ html, body, [data-testid="stAppViewContainer"] {
     font-family: 'DM Sans', sans-serif !important;
 }
 
+/* ── Animated glowing background ── */
+[data-testid="stAppViewContainer"]::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 20% 30%, #9b6dff18 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, #6a3fcf18 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, #16112e 0%, #0d0b1a 100%);
+    z-index: -1;
+    animation: pulse-bg 8s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+@keyframes pulse-bg {
+    from { opacity: 0.6; }
+    to   { opacity: 1; }
+}
+
 [data-testid="stSidebar"] {
     background: var(--card) !important;
     border-right: 1px solid var(--border) !important;
@@ -46,6 +64,7 @@ html, body, [data-testid="stAppViewContainer"] {
 
 h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
 
+/* ── Hero ── */
 .hero {
     background: linear-gradient(135deg, #16112e 0%, #1e1645 50%, #16112e 100%);
     border: 1px solid var(--border);
@@ -55,15 +74,6 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
     position: relative;
     overflow: hidden;
 }
-.hero::before {
-    content: '🔬';
-    position: absolute;
-    right: 2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 5rem;
-    opacity: 0.08;
-}
 .hero h1 {
     font-size: 2.6rem;
     margin: 0 0 0.3rem 0;
@@ -71,8 +81,37 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-.hero p { color: var(--muted); font-size: 1rem; margin: 0; }
+.hero p { color: var(--muted); font-size: 1rem; margin: 0 0 1.2rem 0; }
 
+/* ── Hero stat badges ── */
+.hero-badges {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+.hero-badge {
+    background: #2d2450;
+    border: 1px solid #9b6dff44;
+    border-radius: 20px;
+    padding: 0.25rem 0.85rem;
+    font-size: 0.78rem;
+    color: #c4b5fd;
+    font-weight: 500;
+}
+
+/* ── Hero SVG orb (replaces emoji) ── */
+.hero-orb {
+    position: absolute;
+    right: 2.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.18;
+    width: 130px;
+    height: 130px;
+}
+
+/* ── Metric cards ── */
 .metric-card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -84,15 +123,18 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
     font-size: 1.8rem;
     font-weight: 600;
     font-family: 'DM Serif Display', serif;
+    color: #9b6dff;
 }
 .metric-card .lbl { color: var(--muted); font-size: 0.8rem; margin-top: 0.2rem; }
 
+/* ── Result cards with glow ── */
 .result-benign {
     background: linear-gradient(135deg, #0d2b1f, #1a3d2b);
     border: 2px solid var(--benign);
     border-radius: 16px;
     padding: 2rem;
     text-align: center;
+    box-shadow: 0 0 40px #4caf8a33;
 }
 .result-malignant {
     background: linear-gradient(135deg, #2b0d18, #3d1a23);
@@ -100,10 +142,12 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
     border-radius: 16px;
     padding: 2rem;
     text-align: center;
+    box-shadow: 0 0 40px #e05c7a33;
 }
 .result-title { font-family: 'DM Serif Display', serif; font-size: 2rem; margin: 0.5rem 0; }
 .result-sub { color: var(--muted); font-size: 0.9rem; }
 
+/* ── Rule cards ── */
 .rule-card {
     background: var(--card);
     border-left: 3px solid;
@@ -112,9 +156,10 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
     margin-bottom: 0.6rem;
     font-size: 0.85rem;
 }
-.rule-benign   { border-color: #4caf8a; }
+.rule-benign    { border-color: #4caf8a; }
 .rule-malignant { border-color: #e05c7a; }
 
+/* ── Section headers ── */
 .section-header {
     font-family: 'DM Serif Display', serif;
     font-size: 1.4rem;
@@ -124,6 +169,7 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
     margin: 1.5rem 0 1rem 0;
 }
 
+/* ── Sliders & buttons ── */
 .stSlider > div > div > div { background: var(--accent) !important; }
 .stButton > button {
     background: linear-gradient(135deg, #9b6dff, #6a3fcf) !important;
@@ -136,6 +182,7 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
     padding: 0.7rem 2rem !important;
     width: 100% !important;
     transition: opacity 0.2s !important;
+    box-shadow: 0 4px 20px #9b6dff33 !important;
 }
 .stButton > button:hover { opacity: 0.85 !important; }
 
@@ -143,6 +190,17 @@ div[data-testid="stSelectbox"] label,
 div[data-testid="stSlider"] label { color: var(--text) !important; font-size: 0.9rem !important; }
 
 .stAlert { border-radius: 10px !important; }
+
+/* ── Active tab glow ── */
+.stTabs [data-baseweb="tab"][aria-selected="true"] {
+    color: #9b6dff !important;
+    border-bottom: 2px solid #9b6dff !important;
+    text-shadow: 0 0 12px #9b6dff88;
+}
+.stTabs [data-baseweb="tab-list"] {
+    border-bottom: 1px solid var(--border) !important;
+    gap: 0.5rem;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -246,13 +304,36 @@ models, scaler, metrics, rules_df = load_models()
 # ── Hero ─────────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero">
+  <svg class="hero-orb" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="60" r="54" fill="none" stroke="#9b6dff" stroke-width="1"/>
+    <circle cx="60" cy="60" r="38" fill="none" stroke="#9b6dff" stroke-width="1.2"/>
+    <circle cx="60" cy="60" r="22" fill="#9b6dff" opacity="0.25"/>
+    <circle cx="60" cy="60" r="10" fill="#9b6dff" opacity="0.55"/>
+    <circle cx="60" cy="60" r="4"  fill="#e8e4f8"/>
+  </svg>
   <h1>CancerLens</h1>
   <p>Breast Cancer Classification · Wisconsin Dataset · 4 ML Algorithms</p>
+  <div class="hero-badges">
+    <span class="hero-badge">🎯 97% Accuracy</span>
+    <span class="hero-badge">🧬 683 Patients</span>
+    <span class="hero-badge">🔬 9 Clinical Features</span>
+    <span class="hero-badge">⚡ 4 ML Models</span>
+  </div>
 </div>
 """, unsafe_allow_html=True)
 
 # ── Sidebar ──────────────────────────────────────────────────────
 with st.sidebar:
+    st.markdown("""
+    <div style="text-align:center; padding: 0.8rem 0 1rem 0;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Breast_cancer_cell_line.jpg/320px-Breast_cancer_cell_line.jpg"
+           style="border-radius:10px; width:100%; border: 1px solid #2d2450; opacity:0.75"/>
+      <div style="color:#8878b8; font-size:0.68rem; margin-top:0.4rem; letter-spacing:0.03em">
+        Breast cancer cells · SEM imaging
+      </div>
+    </div>
+    <hr style="border-color:#2d2450; margin: 0.5rem 0 1rem 0"/>
+    """, unsafe_allow_html=True)
     st.markdown("### ⚙️ Settings")
     algo = st.selectbox("Algorithm", list(models.keys()), index=2)
     st.markdown("---")
