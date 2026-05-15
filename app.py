@@ -257,7 +257,7 @@ def load_models():
     # Neural Network: MLPClassifier hidden_layer_sizes=(16,8), relu, adam → 97.08%
     # Rule Induction: RuleFitClassifier random_state=42                  → 96.35%
     metrics = {
-        "Decision Tree":  {"Accuracy": 94.89, "Precision": 93.00, "Recall": 92.00, "F1-Score": 92.50},
+        "Decision Tree":  {"Accuracy": 94.89, "Precision": 92.16, "Recall": 94.00, "F1-Score": 93.07},
         "Naive Bayes":    {"Accuracy": 94.16, "Precision": 92.00, "Recall": 92.00, "F1-Score": 92.00},
         "Neural Network": {"Accuracy": 97.08, "Precision":100.00, "Recall": 92.00, "F1-Score": 95.83},
         "Rule Induction": {"Accuracy": 96.35, "Precision": 97.87, "Recall": 92.00, "F1-Score": 94.85},
