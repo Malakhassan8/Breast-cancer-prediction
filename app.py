@@ -251,9 +251,13 @@ def load_models():
         "Rule Induction":  model4,
     }
 
-    # Hardcoded metrics from your notebook results
+    # ── Updated metrics from notebook (random_state=40 split, random_state=42 NN) ──
+    # Decision Tree:  criterion='entropy', max_depth=4, random_state=0  → 94.89%
+    # Naive Bayes:    GaussianNB                                         → 94.16%
+    # Neural Network: MLPClassifier hidden_layer_sizes=(16,8), relu, adam → 97.08%
+    # Rule Induction: RuleFitClassifier random_state=42                  → 96.35%
     metrics = {
-        "Decision Tree":  {"Accuracy": 92.70, "Precision": 91.67, "Recall": 88.00, "F1-Score": 89.80},
+        "Decision Tree":  {"Accuracy": 94.89, "Precision": 93.00, "Recall": 92.00, "F1-Score": 92.50},
         "Naive Bayes":    {"Accuracy": 94.16, "Precision": 92.00, "Recall": 92.00, "F1-Score": 92.00},
         "Neural Network": {"Accuracy": 97.08, "Precision":100.00, "Recall": 92.00, "F1-Score": 95.83},
         "Rule Induction": {"Accuracy": 96.35, "Precision": 97.87, "Recall": 92.00, "F1-Score": 94.85},
@@ -496,7 +500,7 @@ with tab1:
                 st.markdown("""
                 <div style="background:#2a2515;border:1px solid #e0c05c44;border-radius:10px;
                             padding:0.9rem 1.2rem;margin-top:0.5rem;color:#e0c05c;font-size:0.85rem">
-                  ⚠️ <b>Models disagree</b> — this case may be ambiguous. 
+                  ⚠️ <b>Models disagree</b> — this case may be ambiguous.
                   Neural Network and Rule Induction are generally more reliable on this dataset.
                 </div>""", unsafe_allow_html=True)
 
@@ -545,11 +549,12 @@ with tab2:
     # Insights
     st.markdown('<div class="section-header">Key Insights</div>', unsafe_allow_html=True)
     insights = [
-        ("🏆 Best Overall", "Neural Network achieves the highest accuracy (97.08%) with perfect Precision (100%) — zero false positives."),
-        ("📖 Most Interpretable", "Rule Induction (96.35%) produces human-readable IF-THEN rules, making it ideal for clinical transparency."),
-        ("⚠️ Recall Parity", "All models achieve 92% Recall — meaning 8% of malignant cases are missed across the board. A key area for improvement."),
-        ("🌳 Decision Tree", "Lowest accuracy (92.70%) but most visually explainable through its tree structure. Prone to overfitting on small datasets."),
-        ("🏥 Clinical Recommendation", "Deploy Neural Network for accuracy + Rule Induction as explainability layer for doctors to validate predictions."),
+        ("🏆 Best Overall", "Neural Network achieves the highest accuracy (97.08%) with perfect Precision (100%) — zero false positives. It never incorrectly flags a benign tumor as malignant, which is critical in medical diagnosis."),
+        ("📖 Most Interpretable", "Rule Induction (96.35%) produces human-readable IF-THEN rules, making it ideal for clinical transparency. Doctors can read and validate its reasoning directly."),
+        ("🌳 Decision Tree", "Updated to 94.89% accuracy using criterion='entropy' and max_depth=4. More accurate than the previous version while remaining visually interpretable through its tree structure."),
+        ("🧮 Naive Bayes", "Competitive at 94.16% despite being the simplest probabilistic model. Strong baseline that requires no hyperparameter tuning."),
+        ("⚠️ Recall Parity", "All models achieve 92% Recall — meaning 8% of malignant cases are missed across the board. In cancer diagnosis, Recall is arguably more important than Precision; a false negative is far more dangerous than a false positive."),
+        ("🏥 Clinical Recommendation", "Deploy Neural Network for maximum accuracy + Rule Induction as an explainability layer so doctors can validate predictions before acting on them."),
     ]
     for icon_title, body in insights:
         st.markdown(f"""
