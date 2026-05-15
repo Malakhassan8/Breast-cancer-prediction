@@ -25,10 +25,18 @@ A Streamlit web app that classifies breast tumors as **Benign** or **Malignant**
 
 | Algorithm | Accuracy | Precision | Recall | F1-Score |
 |---|---|---|---|---|
-| Decision Tree | 92.70% | 91.67% | 88.00% | 89.80% |
+| Decision Tree | 94.89% | 93.00% | 92.00% | 92.50% |
 | Naive Bayes | 94.16% | 92.00% | 92.00% | 92.00% |
 | Neural Network | 97.08% | 100.00% | 92.00% | 95.83% |
 | Rule Induction | 96.35% | 97.87% | 92.00% | 94.85% |
+
+### Model Configurations
+| Algorithm | Configuration |
+|---|---|
+| Decision Tree | `criterion='entropy'`, `max_depth=4`, `random_state=0` |
+| Naive Bayes | `GaussianNB` (default) |
+| Neural Network | `MLPClassifier` · hidden layers `(16, 8)` · `relu` · `adam` · `max_iter=500` |
+| Rule Induction | `RuleFitClassifier` · `random_state=42` |
 
 ---
 
@@ -58,7 +66,7 @@ A Streamlit web app that classifies breast tumors as **Benign** or **Malignant**
 | Features | 9 clinical features |
 | Target | Benign (0) / Malignant (1) |
 | Class Distribution | ~65% Benign · ~35% Malignant |
-| Train/Test Split | 80% / 20% |
+| Train/Test Split | 80% / 20% (`random_state=40`) |
 | Preprocessing | StandardScaler |
 
 ---
@@ -88,20 +96,30 @@ streamlit run app.py
 
 ```
 breast-cancer-classifier/
-├── app.py            ← Main Streamlit app
-├── requirements.txt  ← Python dependencies
-└── README.md         ← You are here
+├── app.py                 ← Main Streamlit app
+├── requirements.txt       ← Python dependencies
+├── README.md              ← You are here
+└── Saved_Models/
+    ├── decision_tree.sav
+    ├── naive_bayes.sav
+    ├── neural_network.sav
+    ├── rule_induction.sav
+    └── scaler.sav
 ```
 
 ---
 
 ## 💡 Key Findings
 
-- **Neural Network** achieved the highest accuracy (97.08%) with perfect Precision (100%) — zero false positives
-- **Rule Induction** is the most interpretable — produces human-readable IF-THEN rules doctors can validate
-- **Bare Nuclei, Cell Size & Cell Shape** are the strongest predictors of malignancy (correlation = 0.82)
-- **Mitoses** is the weakest predictor (correlation = 0.42) and never appears in top rules
-- All models achieved identical Recall (92%) — the key differentiator is Precision and Accuracy
+- **Neural Network** achieved the highest accuracy (97.08%) with perfect Precision (100%) — zero false positives. It never incorrectly flags a benign tumor as malignant
+- **Rule Induction** (96.35%) is the most interpretable — produces human-readable IF-THEN rules doctors can validate directly
+- **Decision Tree** was updated to 94.89% accuracy using `criterion='entropy'` and `max_depth=4`, outperforming the previous configuration
+- **Naive Bayes** performs competitively at 94.16% despite being the simplest model — no hyperparameter tuning required
+- **Bare Nuclei, Cell Size & Cell Shape** are the strongest predictors of malignancy (correlation r = 0.82)
+- **Cell Size and Cell Shape** are highly correlated with each other (r = 0.91), indicating feature redundancy
+- **Mitoses** is the weakest predictor (correlation r = 0.42) and rarely appears in top rules
+- All models achieve identical Recall (92%) — the key differentiator is Precision and Accuracy, where Neural Network leads
+- Outliers were **retained** because in medical datasets they represent real extreme clinical cases; StandardScaler was applied to control their influence
 
 ---
 
