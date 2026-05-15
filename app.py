@@ -23,14 +23,14 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 :root {
-    --bg: #0f1117;
-    --card: #1a1d27;
-    --accent: #e05c7a;
+    --bg: #0d0b1a;
+    --card: #16112e;
+    --accent: #9b6dff;
     --benign: #4caf8a;
     --malignant: #e05c7a;
-    --text: #e8eaf0;
-    --muted: #7a7f9a;
-    --border: #2a2d3e;
+    --text: #e8e4f8;
+    --muted: #8878b8;
+    --border: #2d2450;
 }
 
 html, body, [data-testid="stAppViewContainer"] {
@@ -47,7 +47,7 @@ html, body, [data-testid="stAppViewContainer"] {
 h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
 
 .hero {
-    background: linear-gradient(135deg, #1a1d27 0%, #21253a 50%, #1a1d27 100%);
+    background: linear-gradient(135deg, #16112e 0%, #1e1645 50%, #16112e 100%);
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 2.5rem 3rem;
@@ -67,7 +67,7 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
 .hero h1 {
     font-size: 2.6rem;
     margin: 0 0 0.3rem 0;
-    background: linear-gradient(135deg, #e8eaf0, #e05c7a);
+    background: linear-gradient(135deg, #e8e4f8, #9b6dff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -126,7 +126,7 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif !important; }
 
 .stSlider > div > div > div { background: var(--accent) !important; }
 .stButton > button {
-    background: linear-gradient(135deg, var(--accent), #c0425f) !important;
+    background: linear-gradient(135deg, #9b6dff, #6a3fcf) !important;
     color: white !important;
     border: none !important;
     border-radius: 10px !important;
